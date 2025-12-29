@@ -845,6 +845,11 @@ export class Parser {
 
 		node.addChild(this._parseString());
 
+		// Generally, no new line is required before the program body, except for declaration tokens.
+		if (this.peekAny(TokenType.Prog, TokenType.Dollar, TokenType.AT, TokenType.GTS)) {
+			this.markError(node, ParseError.NewLineExpected, [], [TokenType.NewLine]);
+		}
+
 		return this._parseBody(node, this._parseProgramBody.bind(this));
 	}
 
@@ -1333,17 +1338,18 @@ export class Parser {
 	}
 
 	public _parseWhileStatement(parseStatement: () => nodes.Node | null): nodes.Node | null {
-		if (!this.peekKeyword('while')) {
+		if (!this.peekKeyword('while') && !this.peekKeyword('do')) {
 			return null;
 		}
 
 		const node = <nodes.WhileStatement>this.create(nodes.WhileStatement);
-		this.consumeToken(); // while
 
-		if (!node.setConditional(this._parseConditionalExpression())) {
-			this.markError(node, ParseError.ExpressionExpected, [], [TokenType.KeyWord, TokenType.Symbol, TokenType.NewLine]);
+		if (this.acceptKeyword('while')) {
+			if (!node.setConditional(this._parseConditionalExpression())) {
+				this.markError(node, ParseError.ExpressionExpected, [], [TokenType.KeyWord, TokenType.Symbol, TokenType.NewLine]);
+			}
 		}
-
+		
 		if (!this.acceptKeyword('do')) {
 			this.markError(node, ParseError.DoExpected, [], [TokenType.Symbol, TokenType.NewLine]);
 		}
@@ -2034,7 +2040,7 @@ export class Parser {
 			return false;
 		}
 		switch (node.type) {
-			case nodes.NodeType.Program:
+			//case nodes.NodeType.Program:
 			case nodes.NodeType.Then:
 			case nodes.NodeType.Else:
 			case nodes.NodeType.While:

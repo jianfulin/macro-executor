@@ -98,6 +98,7 @@ suite('Parser', () => {
 		let parser = new Parser(null);
 		assertNode('O 1000\n', parser, parser._parseProgram.bind(parser));
 		assertNode('O test\n', parser, parser._parseProgram.bind(parser));
+		assertNode('O 1000 GOTO1\nN1\n', parser, parser._parseProgram.bind(parser));
 		assertError('O ', parser, parser._parseProgram.bind(parser), ParseError.FunctionIdentExpected);
 	});
 
@@ -229,7 +230,7 @@ suite('Parser', () => {
 	test('WHILE statement', function () {
 		let parser = new Parser(null);
 		assertNode('WHILE [1] DO 1\nEND 1', parser, parser._parseWhileStatement.bind(parser, ()=> {}));
-	
+		
 		assertError('WHILE ', parser, parser._parseWhileStatement.bind(parser), ParseError.LeftSquareBracketExpected);
 		assertError('WHILE [ ', parser, parser._parseWhileStatement.bind(parser), ParseError.ExpressionExpected);
 		assertError('WHILE [1 ', parser, parser._parseWhileStatement.bind(parser), ParseError.RightSquareBracketExpected);
@@ -237,6 +238,11 @@ suite('Parser', () => {
 		assertError('WHILE [1] DO ', parser, parser._parseWhileStatement.bind(parser), ParseError.LabelExpected);
 		assertError('WHILE [1] DO 1\n ', parser, parser._parseWhileStatement.bind(parser, ()=> {}), ParseError.EndExpected);
 		assertError('WHILE [1] DO 1\n END', parser, parser._parseWhileStatement.bind(parser, ()=> {}), ParseError.LabelExpected);
+		
+		assertNode('DO 1\nEND 1', parser, parser._parseWhileStatement.bind(parser, ()=> {}));
+		assertError('DO ', parser, parser._parseWhileStatement.bind(parser), ParseError.LabelExpected);
+		assertError('DO 1\n ', parser, parser._parseWhileStatement.bind(parser, ()=> {}), ParseError.EndExpected);
+		assertError('DO 1\n END', parser, parser._parseWhileStatement.bind(parser, ()=> {}), ParseError.LabelExpected);
 	});
 	
 	test('Binary expression', function () {
@@ -307,7 +313,10 @@ suite('Parser', () => {
 		let parser = new Parser(null);
 		assertError('@var1  1 10 ', parser, parser._parseMacroFile.bind(parser), ParseError.InvalidStatement);
 		assertError('>var2  1 10 ', parser, parser._parseMacroFile.bind(parser), ParseError.InvalidStatement);
-		assertError('O 100 N10 ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
+		//assertError('O 100 N10 ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
+		assertError('O 100 @1 1 ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
+		assertError('O 100 >1 1 ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
+		assertError('O 100 $INCLUDE test.def ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
 		assertError('O 100 \n #100 = 1 N10 ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
 		assertError('O 100 \n IF [1] THEN #1 = 1 N10 ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
 		assertError('O 100 \n IF [1] GOTO 10 N10 ', parser, parser._parseMacroFile.bind(parser), ParseError.NewLineExpected);
