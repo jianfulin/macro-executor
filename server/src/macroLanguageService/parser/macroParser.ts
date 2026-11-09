@@ -1842,8 +1842,11 @@ export class Parser {
 
 	public _parsePrntAnyText() : nodes.Node {
 		
+		// Alphanumeric text is literal, whatever token type the scanner gave it (e.g. NO, OFFSET, IF)
+		// 純英數字一律視為文字，不論 scanner 判定的 token 類型為何（例如 NO、OFFSET、IF）
 		if (!(this.peekRegExp(TokenType.Symbol, /[a-zA-Z]/)
 			|| this.peek(TokenType.Number)
+			|| this.peekRegexp(/^[a-zA-Z0-9]+$/)
 			|| this.peekAnyKeyword('*', '/', '+', '-'))) {
 			return null;
 		}

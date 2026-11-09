@@ -379,6 +379,21 @@ suite('Parser', () => {
 		assertNode('DPRNT[POSN*R#7[44]***ACTUAL*#838[44]***DEV#843[34]/+-1234]', parser, parser._parseFcommand.bind(parser));
 		assertError('DPRNT[POSN*R#7]', parser, parser._parseFcommand.bind(parser), ParseError.PrntFormatExpected);
 		assertError('DPRNT[POSN*R#7[44]@]', parser, parser._parseFcommand.bind(parser), ParseError.UnexpectedToken);
+
+		// Alphanumeric text is literal, even if it looks like a keyword, program or sequence
+		// 純英數字一律視為文字，即使看起來像關鍵字、程式號或序號
+		assertNode('DPRNT[NO*OFFSET*NUMBER*NOMINAL]', parser, parser._parseFcommand.bind(parser));
+		assertNode('DPRNT[OUT*OF*TOL]', parser, parser._parseFcommand.bind(parser));
+		assertNode('DPRNT[N*O*NN*O1*N100]', parser, parser._parseFcommand.bind(parser));
+		assertNode('DPRNT[IF*THEN*GOTO*WHILE*DO*END]', parser, parser._parseFcommand.bind(parser));
+		assertNode('DPRNT[EQ*NE*AND*OR*MOD*SIN]', parser, parser._parseFcommand.bind(parser));
+		assertNode('DPRNT[NO#1[53]*OUT]', parser, parser._parseFcommand.bind(parser));
+		assertNode('BPRNT[NO*OFFSET]', parser, parser._parseFcommand.bind(parser));
+
+		// Rejected by the macro compiler (#1415) / 巨集編譯器會拒絕（#1415）
+		assertError('DPRNT[A.B]', parser, parser._parseFcommand.bind(parser), ParseError.UnexpectedToken);
+		assertError('DPRNT[A=B]', parser, parser._parseFcommand.bind(parser), ParseError.UnexpectedToken);
+		assertError('DPRNT[NO[]', parser, parser._parseFcommand.bind(parser), ParseError.UnexpectedToken);
 	});
 
 	test('Non Symbol Statement', function () {
