@@ -4,16 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 專案概述
 
-Fanuc Macro Executor 語言的 VS Code 擴充套件，採 LSP 架構。此 repo 是 fork：`origin` 為 jianfulin/macro-executor，上游 remote `iSorp` 為 iSorp/macro-executor。fork 新增了繁體中文（`cht` / `zh-tw`）翻譯與 `macro.fileEncoding`（cp950 / Big5 原始碼支援）。
+Fanuc Macro Executor 語言的 VS Code 擴充套件，採 LSP 架構。此 repo 是 fork：`origin` 為 jianfulin/macro-executor，上游 remote `iSorp` 為 iSorp/macro-executor，已合併至上游 1.1.1。extension ID 為 `jianfulin.macro-executor`，刻意與上游不同，避免被 Marketplace 自動更新覆蓋。fork 新增了繁體中文（`zh-tw`）翻譯、`.def` 內的巢狀 `$INCLUDE`，以及 `macro.fileEncoding`（cp950 / Big5 原始碼支援）。
 
 ## 常用指令
 
 ```bash
-npm install              # postinstall 會一併安裝 client/ 與 server/ 的相依套件
-npm run compile          # tsc -b，只編譯，不處理 NLS
+npm install              # npm workspaces：server、client、shared
+npm run compile          # tsc -b 後以 esbuild 打包 client/out/extension.js、server/out/server.js
 npm run watch            # 開發用；F5 的 preLaunchTask
-npm run build            # gulp build：clean + NLS 編譯 + 重新產生 package.nls.*.json
-npx gulp package         # build 後打包成 .vsix
+npm run package          # compile 後打包成 .vsix（已加 --no-dependencies；不加會因 workspaces 找不到進入點）
 npm run lint             # 僅檢查 client/src/*.ts、server/src/*.ts 頂層檔案，不含 macroLanguageService/
 
 npm run unit-test        # compile + mocha（language service 單元測試）
@@ -36,11 +35,14 @@ npx mocha --grep "Scanner Token NN"
 ```
 client/src/extension.ts          啟動 LSP client；middleware 處理需要 UI 的指令與設定
 client/src/common/commands.ts    編譯 / 連結 / 清理（組出 MCOMP* / MLINK* / M*CARD* 的 shell task）
+client/src/debugger/             CNC debug adapter；經 gRPC 連到 macro-executor-server（FOCAS）
+shared/src/                      client 與 server 共用的型別（@macro/shared）
 server/src/server.ts             LSP 連線；每個 workspace folder 一組 LanguageService + FileProvider
 server/src/fileProvider.ts       讀檔、解碼、解析結果快取（parsedDocuments）
+server/src/l10nService.ts        server 端訊息的 localize()
 server/src/macroLanguageService/ 語言核心，透過 macroLanguageService.ts 的 facade 對外
   parser/    Scanner → Parser → Node 樹（macroNodes）
-  services/  各 LSP 功能的實作
+  services/  各 LSP 功能的實作（macroDebugging、macroLinker 供 debugger 使用）
   languageFacts/builtinData.ts   內建函式簽章與說明文字
 ```
 
@@ -66,7 +68,7 @@ server/src/macroLanguageService/ 語言核心，透過 macroLanguageService.ts �
 1. `services/lintRules.ts`：`Rules`（id 與預設層級）
 2. `services/lint.ts`：`LintVisitor` 的檢查邏輯
 3. `package.json`：`macro.lint.rules` 的設定 schema
-4. `i18n/{deu,chs,cht}/server/out/macroLanguageService/services/lintRules.i18n.json`：翻譯
+4. `l10n/bundle.l10n.{de,zh-cn,zh-tw}.json`：翻譯
 5. `README.md` 與 `README_TW.md` 的規則列表
 
 ### 快取與跨檔案
@@ -76,18 +78,17 @@ server/src/macroLanguageService/ 語言核心，透過 macroLanguageService.ts �
 - `macro.fileEncoding` 只影響 `FileProvider` 從磁碟讀取的未開啟檔案；已開啟文件的內容由 VS Code 解碼。`cp950` 實際以 Big5 的 `TextDecoder` 解碼，且 BOM 優先於設定值。
 - 符號與 label 的跨檔搜尋只在定義來自 `.def` 時生效，否則限於目前檔案。
 
-## 多語系（i18n）
+## 多語系（l10n）
 
-server 端字串以 `vscode-nls` 的 `localize('key', 'English default')` 撰寫。client 端目前沒有使用 `localize`，字串為硬編碼英文。
+server 端字串以 `server/src/l10nService.ts` 的 `localize('key', 'English default')` 撰寫。client 啟動 server 時以環境變數 `L10N_BUNDLE` 傳入語系檔路徑。
 
-| 內容 | 英文來源 | 翻譯位置（語言資料夾：`deu` / `chs` / `cht`） |
+| 內容 | 英文來源 | 翻譯位置（語言：`de` / `zh-cn` / `zh-tw`） |
 | --- | --- | --- |
-| server 訊息 | `localize()` 的預設字串 | `i18n/<語言>/server/out/<模組路徑>.i18n.json`，key 對應 `localize` 第一個參數 |
-| `package.json` 的 `%key%` | `package.nls.json` | `i18n/<語言>/package.i18n.json` |
+| server 訊息 | `localize()` 的預設字串 | `l10n/bundle.l10n.<語言>.json`，key 對應 `localize` 第一個參數 |
+| `package.json` 的 `%key%` | `package.nls.json` | `package.nls.<語言>.json` |
 
-- **不要手動修改 `package.nls.{de,zh-cn,zh-tw}.json`**：這些檔案雖受版控，但 `gulp build` 會刪除後從 `i18n/` 重新產生。
-- `gulp clean`（包含 `build`、`package`）也會刪除根目錄的 `macro-executor*.vsix`。
-- `npm run compile` / `watch` 不會處理 NLS，輸出只有英文預設字串；要驗證翻譯必須執行 `npm run build`。
+- `l10n/` 與 `package.nls.*.json` 都直接手動維護，沒有產生步驟。
+- 上游的 `bundle.l10n.*` 不含 `builtin.*` key；與上游同步時要保留 fork 的翻譯，`builtinData.ts` 也要維持使用 `localize`。
 
 ## 其他注意事項
 

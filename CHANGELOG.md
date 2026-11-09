@@ -1,3 +1,19 @@
+## 1.1.2  (November 9, 2026)
+- Fork: extension ID changed to `jianfulin.macro-executor`
+- Merge upstream 1.1.1 (debug adapter, esbuild, l10n)
+- Keep fork features: nested `$INCLUDE`, `macro.fileEncoding` (cp950/Big5), zh-tw translation
+
+## 1.1.1  (April 30, 2026)
+- Debug adapter, fix debug variable scopes
+- Debug adapter, check for valid linker files 
+
+## 1.1.0  (April 27, 2026)
+- Debug adapter, Closes [#57](https://github.com/iSorp/macro-executor/issues/57) 
+- Fix sequence number or label not found after G10 [#55](https://github.com/iSorp/macro-executor/issues/55)
+- Fix P#.# error [#48](https://github.com/iSorp/macro-executor/issues/48)
+- Fix GOTO [#46](https://github.com/iSorp/macro-executor/issues/46)
+- Fix DOx (LOOP) ENDx [#45](https://github.com/iSorp/macro-executor/issues/45)
+
 ## 1.0.1  (December 25, 2025)
 - Bump extension version to 1.0.1
 

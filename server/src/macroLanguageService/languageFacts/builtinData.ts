@@ -4,11 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import * as nls from 'vscode-nls';
+import { localize } from '../../l10nService';
 
 import { FunctionSignature } from '../macroLanguageTypes';
 
-const localize: nls.LocalizeFunc = nls.loadMessageBundle();
 
 const paramText = {
 	parameters: localize('builtin.param.parameters', 'parameters'),
