@@ -762,7 +762,7 @@
 		"generate-proto": "protoc -I ./client/proto --ts_proto_out=./client/src/debugger --ts_proto_opt=outputServices=grpc-js,outputClientImpl=grpc-js,esModuleInterop=true,useOptionals=messages ./client/proto/debugService.proto"
 	},
 	"devDependencies": {
-		"@eslint/js": "^10.0.1",
+		"@eslint/js": "^9.9.1",
 		"@macro/shared": "*",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^25.3.5",
