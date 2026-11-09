@@ -114,8 +114,8 @@ Visual Studio Code 的擴充，支援 Fanuc Macro Executor 程式語言，包括
 }
 ```
 
-| disabled | enabled     |
-|:-------------:|:-------------:|
+|                  disabled                   |                     enabled                     |
+| :-----------------------------------------: | :---------------------------------------------: |
 | ![no semantic](./resources/no_semantic.png) | ![with Semantic](./resources/with_semantic.png) |
 
 
@@ -130,12 +130,12 @@ Visual Studio Code 的擴充，支援 Fanuc Macro Executor 程式語言，包括
 你可以在使用者／工作區設定中，透過 `macro.keywords` 加入自訂關鍵字項目來達成：
 
 
-| **Keyword item**|                               | 
-|-------------|-----------------------------------|
-| symbol      | 符號文字                           |
-| scope       | [Scopes](#Scopes)                 |
-| nodeType    | 標籤、符號、Code（M/G）、變數        |
-| description | Markdown `string` \| `string[]`   |
+| **Keyword item** |                                 |
+| ---------------- | ------------------------------- |
+| symbol           | 符號文字                        |
+| scope            | [Scopes](#Scopes)               |
+| nodeType         | 標籤、符號、Code（M/G）、變數   |
+| description      | Markdown `string` \| `string[]` |
 
 
 `nodeType` 欄位定義該關鍵字在巨集程式中的類型。若為空，關鍵字項目會影響該符號的所有出現位置，不論其類型。例如若要為特定 P-Code 變數加入**滑鼠懸停**文字，可如下設定：
@@ -149,16 +149,16 @@ Visual Studio Code 的擴充，支援 Fanuc Macro Executor 程式語言，包括
 ```
 
 ### Scopes
-|           | Style for compile-time Variable nodeType | 
-|-----------|------------------------------------------|
-| number    | 數值 (@var  10000) |
+|           | Style for compile-time Variable nodeType |
+| --------- | ---------------------------------------- |
+| number    | 數值 (@var  10000)                       |
 | macrovar  | Macro 變數 (@var     #10000)             |
-| constant  | 常數數值 (@UPPER  10000)             |
-| language  | 語言常數（例如 true/false）          |
-| label     | 標籤                                        |
-| code      | M-Code/G-Code                                |
-| parameter | NC-參數                                 |
-| address   | 地址                                      |
+| constant  | 常數數值 (@UPPER  10000)                 |
+| language  | 語言常數（例如 true/false）              |
+| label     | 標籤                                     |
+| code      | M-Code/G-Code                            |
+| parameter | NC-參數                                  |
+| address   | 地址                                     |
 
 
 這些 scopes 會在內部使用，並依據所選配色主題（例如 **[Noctis](https://marketplace.visualstudio.com/items?itemName=liviuschera.noctis#review-details)**）決定符號樣式。若要覆寫樣式，請在 `editor.semanticTokenColorCustomizations` 設定中加入 **[rules](https://github.com/microsoft/vscode/wiki/Semantic-Highlighting-Overview#as-a-theme-author-do-i-need-to-change-my-theme-to-make-it-work-with-semantic-highlighting)**。
@@ -231,11 +231,11 @@ Lint 可透過設定（使用者或工作區）調整下列規則。
 
 ## 預設命令
 
-| Command | Key          |
-|---------|--------------|
-| Build   | Ctrl+Shift+B |
-| Link / build all    | Ctrl+Shift+L |
-| Clean   | Ctrl+Shift+C |
+| Command          | Key          |
+| ---------------- | ------------ |
+| Build            | Ctrl+Shift+B |
+| Link / build all | Ctrl+Shift+L |
+| Clean            | Ctrl+Shift+C |
 
 
 ## 擴充設定

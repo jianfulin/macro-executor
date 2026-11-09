@@ -6,5 +6,11 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit"
 	},
-	"editor.bracketPairColorization.enabled": true
+	"editor.bracketPairColorization.enabled": true,
+	"[markdown]": {
+		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
+	},
+	"markdown.preview.scrollEditorWithPreview": true,
+	"markdown.preview.scrollPreviewWithEditor": true,
+	"markdown.validate.enabled": true
 }

@@ -114,8 +114,8 @@ For some color themes, the semantic highlighting must be enabled in the settings
 }
 ```
 
-| disabled | enabled     |
-|:-------------:|:-------------:|
+|                  disabled                   |                     enabled                     |
+| :-----------------------------------------: | :---------------------------------------------: |
 | ![no semantic](./resources/no_semantic.png) | ![with Semantic](./resources/with_semantic.png) |
 
 
@@ -130,12 +130,12 @@ Out of the box the extension supports semantic highlighting for ``>``Labels, ``@
 Such a customization can be achieved by adding custom keyword items to the configuration property `macro.keywords` in the user/workspace settings:
 
 
-|     **Keyword item**| | 
-|-------------|----------------------------|
-| symbol      | Symbol text                |
-| scope       | [Scopes](#Scopes)           |
-| nodeType    | Label, Symbol, Code (M/G), Variable   |
-| description | Markdown `string` \| `string[]`   |
+| **Keyword item** |                                     |
+| ---------------- | ----------------------------------- |
+| symbol           | Symbol text                         |
+| scope            | [Scopes](#Scopes)                   |
+| nodeType         | Label, Symbol, Code (M/G), Variable |
+| description      | Markdown `string` \| `string[]`     |
 
 
 The field `nodeType` defines the related type in the macro program. If the field is empty, a keyword item affects all symbol occurrences regardless of the symbols type. E.g. if you want to add a hover text to a particular P-Code variable, an item could be structed as follows:
@@ -149,16 +149,16 @@ The field `nodeType` defines the related type in the macro program. If the field
 ```
 
 ### Scopes
-|    | Style for compile-time Variable nodeType | 
-|-----------|---------------------------------------|
-| number    | Numeric (@var  10000) |
-| macrovar  | Macro variable (@var     #10000)             |
-| constant  | Constant numeric (@UPPER  10000)             |
-| language  | Language constant (e.g. true/false)          |
-| label     | Label                                        |
-| code      | M-Code/G-Code                                |
-| parameter | NC-Parameter                                 |
-| address   | Address                                      |
+|           | Style for compile-time Variable nodeType |
+| --------- | ---------------------------------------- |
+| number    | Numeric (@var  10000)                    |
+| macrovar  | Macro variable (@var     #10000)         |
+| constant  | Constant numeric (@UPPER  10000)         |
+| language  | Language constant (e.g. true/false)      |
+| label     | Label                                    |
+| code      | M-Code/G-Code                            |
+| parameter | NC-Parameter                             |
+| address   | Address                                  |
 
 
  These scopes are used internally and are responsible for the symbol style which depends on the chosen color theme like **[Noctis](https://marketplace.visualstudio.com/items?itemName=liviuschera.noctis#review-details)**. To override the style just add **[rules](https://github.com/microsoft/vscode/wiki/Semantic-Highlighting-Overview#as-a-theme-author-do-i-need-to-change-my-theme-to-make-it-work-with-semantic-highlighting)** to the `editor.semanticTokenColorCustomizations` configuration property.
@@ -232,11 +232,11 @@ Three levels are supported: `error`, `warning` and `ignore`.
 
 ## Default Commands
 
-| Command | Key          |
-|---------|--------------|
-| Build   | Ctrl+Shift+B |
-| Link / build all    | Ctrl+Shift+L |
-| Clean   | Ctrl+Shift+C |
+| Command          | Key          |
+| ---------------- | ------------ |
+| Build            | Ctrl+Shift+B |
+| Link / build all | Ctrl+Shift+L |
+| Clean            | Ctrl+Shift+C |
 
 
 ## Extension Settings
